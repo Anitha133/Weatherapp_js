@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>project</title>
+        <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="../node_modules/bootstrap-icons/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="style.css">
+        
+    </head>
+    <body>
+        <script src="../node_modules/jquery/dist/jquery.js"></script>
+        <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+        
+
+        <div class="card">
+            <div class="search">
+                <input type="text" placeholder="Enter city name" id="cityname" spellcheck="false">
+                
+                <button onclick="searchclick()">
+                    <img src="../images/search.png">
+                </button>
+            </div>
+            <div id="msg"></div>
+            <div class="weather">
+                <div class="weather-icon">
+                    <img id="imagesrc">
+                    <div>
+                        <h1></h1> 
+                        <h2 id="city"></h2>
+                    </div>
+                </div>
+                <div class="windhumid">
+                    <div class="col">
+                        <img src="../images/humidity.png">
+                        <div class="speed">
+                            <h4 id="deg"></h4>
+                            <p>Humidity</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <img src="../images/wind.png">
+                        <div class="wind">
+                            <h4 id="speed"></h4>
+                            <p>Wind Speed</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+    </body>
+    <script>
+        function checkcity(url){
+            fetch (url)
+            .then(function(response){
+                if(response.status==404){
+                    document.getElementById("msg").innerHTML = "Invalid city! try another".fontcolor("red")
+                }else{
+                    document.getElementById("msg").innerHTML = " "
+                }
+                return response.json()
+            })
+        
+            .then ((data)=>{
+                var temp = Math.round(data.main.temp)
+                document.querySelector("h1").innerHTML =( temp - 273.15).toFixed(2)+'°C'
+                document.getElementById("speed").innerHTML = data.wind.speed  + "km/h"
+                document.getElementById("deg").innerHTML = data.main.humidity   +"%"
+                
+                document.getElementById("city").innerHTML = data.name
+
+            
+                var img = data.weather[0].main 
+                console.log(img)
+
+                
+
+                switch(img){
+                    case "Rain":
+                    document.getElementById("imagesrc").src = "../images/rain.png"
+                    break
+
+                    case "Clouds":
+                    document.getElementById("imagesrc").src = "../images/clouds.png"
+                    break
+
+                    case "Drizzle":
+                    document.getElementById("imagesrc").src = "../images/drizzle.png"
+                    break
+
+                    case "Mist": 
+                    document.getElementById("imagesrc").src = "../images/mist.png"
+                    break
+
+                    case "Snow": 
+                    document.getElementById("imagesrc").src = "../images/cloud.png"
+                    break
+
+                    case "Clear": 
+                    document.getElementById("imagesrc").src = "../images/clear.png"
+                    break
+                }
+
+                document.querySelector(".weather").style.display = "block"
+                
+            })
+        }
+        function searchclick(){
+            var cityname = document.getElementById("cityname").value 
+            checkcity(`https://api.openweathermap.org/data/2.5/weather?q=${cityname}&appid=1adbd3c80d17508347bb6af801e87f45`)
+            
+        }
+
+    </script>
+</html>
